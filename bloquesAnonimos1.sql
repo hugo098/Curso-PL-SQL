@@ -9,6 +9,7 @@ DECLARE
     x          CONSTANT NUMBER := 100; /*VARIABLE NO MODIFICABLE*/
     y          NUMBER NOT NULL := 50;  /*VARIABLE NO NULLABLE*/
     b1         BOOLEAN;/*VARIABLE BOOLEANA. PUEDE SER TRUE, FALSE O NULL*/
+    z          y%TYPE:=1;/*SE ASIGNA A Z EL TIPO DE DATO DE Y*/
 
 /*================================================*/
 /*==========INICIO BLOQUE ANÓNIMO PL/SQL==========*/
