@@ -1,9 +1,14 @@
+/*PERMITE LA SALIDA PANTALLA*/
+SET SERVEROUTPUT ON
+
 /*================================================*/
 /*==========INICIO BLOQUE ANÓNIMO PL/SQL==========*/
 
-BEGIN
+BEGIN  
     
-    NULL;
+    DBMS_OUTPUT.PUT_LINE(100);   
+    
+    DBMS_OUTPUT.PUT_LINE('HOLA MUNDO' || 'PL/SQL');
 
 END;
 
