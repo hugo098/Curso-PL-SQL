@@ -1,14 +1,16 @@
 DECLARE
-    C1 TEST.C1%TYPE;
-    C2 test.c2%TYPE;
+    c1   test.c1%TYPE;
+    c2   test.c2%TYPE;
 BEGIN
-    
-    C1:=10;
-    C2:='HOLA MUNDO';
-    
-    
-    INSERT INTO TEST(C1,C2)VALUES(C1,C2);
+    c1 := 10;
+    c2 := 'HOLA MUNDO';
+    INSERT INTO test (
+        c1,
+        c2
+    ) VALUES (
+        c1,
+        c2
+    );
+
     COMMIT;
-
-
 END;
