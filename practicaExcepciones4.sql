@@ -17,6 +17,6 @@ BEGIN
 EXCEPTION
     WHEN pk_duplicada THEN
         dbms_output.put_line('CODIGO DUPLICADO');
-    /*WHEN OTHERS THEN
-        dbms_output.put_line('ERROR INDEFINIDO');*/
+    WHEN OTHERS THEN
+        dbms_output.put_line('ERROR INDEFINIDO');
 END;
