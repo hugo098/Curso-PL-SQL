@@ -1,4 +1,8 @@
-create user test;
-alter user test account unlock;
-alter user test IDENTIFIED BY test;
+CREATE USER test;
+
+ALTER USER test
+    ACCOUNT UNLOCK;
+
+ALTER USER test IDENTIFIED BY test;
+
 GRANT ALL PRIVILEGES TO test IDENTIFIED BY test WITH ADMIN OPTION;
