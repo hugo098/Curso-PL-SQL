@@ -1,0 +1,8 @@
+SET SERVEROUTPUT ON
+
+BEGIN
+    p1;
+END;
+/
+
+EXECUTE p1;
