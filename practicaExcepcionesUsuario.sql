@@ -4,6 +4,7 @@ DECLARE
     control_regiones EXCEPTION;
     codigo NUMBER :=201;
 BEGIN
+
     IF codigo > 200 THEN
         RAISE control_regiones;
     ELSE
