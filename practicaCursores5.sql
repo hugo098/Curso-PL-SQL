@@ -4,8 +4,7 @@ declare
     
     empl employees%rowtype;
     
-begin
-    
+begin --test    
     open c1;
     
     FETCH c1 into empl;
