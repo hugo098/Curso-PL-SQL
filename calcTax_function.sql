@@ -1,6 +1,6 @@
 CREATE OR REPLACE FUNCTION calc_tax_f (
-    empl   IN      employees.employee_id%TYPE,
-    t1     IN OUT  NUMBER
+    empl   IN   employees.employee_id%TYPE,
+    t1     IN   NUMBER
 ) RETURN NUMBER IS
     tax   NUMBER := 0;
     sal   NUMBER := 0;
