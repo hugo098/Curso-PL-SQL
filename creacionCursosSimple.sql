@@ -29,7 +29,11 @@ DECLARE
     v1 regions%rowtype;
 BEGIN
     OPEN c1;
-    FETCH c1 INTO v1;
-    dbms_output.put_line(v1.region_name);
+    LOOP
+        FETCH c1 INTO v1;
+        EXIT WHEN c1%notfound;
+        dbms_output.put_line(v1.region_name);
+    END LOOP;
+
     CLOSE c1;
 END;
