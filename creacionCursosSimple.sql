@@ -41,4 +41,12 @@ BEGIN
     -- CURSOS CON BUCLE FOR
     FOR i IN c1 LOOP dbms_output.put_line(i.region_name);
     END LOOP;
+    FOR i IN (
+        SELECT
+            *
+        FROM
+            regions
+    ) LOOP dbms_output.put_line(i.region_name);
+    END LOOP;
+
 END;
