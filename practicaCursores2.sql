@@ -26,7 +26,7 @@ BEGIN
             dbms_output.put_line(i.first_name
                                  || ' '
                                  || i.last_name
-                                 || ' no es jefe de ningún departamento');
+                                 || ' no es jefe de ningÃºn departamento');
         ELSE
             dbms_output.put_line(i.first_name
                                  || ' '
