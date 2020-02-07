@@ -36,4 +36,9 @@ BEGIN
     END LOOP;
 
     CLOSE c1;
+    ---------------------------------
+    
+    -- CURSOS CON BUCLE FOR
+    FOR i IN c1 LOOP dbms_output.put_line(i.region_name);
+    END LOOP;
 END;
