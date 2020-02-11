@@ -1,5 +1,5 @@
 CREATE OR REPLACE TRIGGER ins_empl AFTER
-    INSERT ON regions
+    INSERT OR UPDATE OF region_name OR DELETE ON regions
 BEGIN
     INSERT INTO log_table VALUES (
         'INSERCION EN LA TABLA REGIONES',
@@ -7,9 +7,9 @@ BEGIN
     );
 
 END ins_empl;
-
 /
 
-INSERT INTO REGIONS VALUES(10, 'REGION');
-
-
+INSERT INTO regions VALUES (
+    11,
+    'REGION'
+);
