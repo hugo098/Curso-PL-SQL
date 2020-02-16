@@ -1,0 +1,10 @@
+CREATE OR REPLACE TRIGGER tr_employees_job BEFORE
+    DELETE ON employees
+    FOR EACH ROW
+    WHEN ( old.job_id LIKE ('%CLERK') )
+BEGIN
+    raise_application_error(-20000, 'NO SE PUEDE ELIMINAR EMPLEADO CON JOB ID CLERK');
+END;
+
+/
+DELETE FROM EMPLOYEES WHERE JOB_id LIKE('%CLERK');
