@@ -1,0 +1,14 @@
+CREATE USER hugo_rodriguez IDENTIFIED BY sa
+    DEFAULT TABLESPACE users
+    TEMPORARY TABLESPACE temp
+    QUOTA UNLIMITED ON users;
+
+GRANT ALL PRIVILEGES TO hugo_rodriguez;
+
+GRANT
+    EXECUTE ANY PROCEDURE
+TO hugo_rodriguez;
+
+GRANT
+    UNLIMITED TABLESPACE
+TO hugo_rodriguez;
