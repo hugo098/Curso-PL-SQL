@@ -3,23 +3,23 @@
 ----------------------------------------------------------------------------------------------------------
 CREATE OR REPLACE PACKAGE pck_facturas AS
     PROCEDURE alta_factura (
-        cod_factura   NUMBER,
-        fecha         DATE,
-        descripcion   VARCHAR2
+        codigo    NUMBER,
+        fech      DATE,
+        descrip   VARCHAR2
     );
 
     PROCEDURE baja_factura (
-        cod_factura NUMBER
+        codigo NUMBER
     );
 
     PROCEDURE mod_descri (
-        cod_factura   NUMBER,
-        descripcion   VARCHAR2
+        codigo    NUMBER,
+        descrip   VARCHAR2
     );
 
     PROCEDURE mod_fecha (
-        cod_factura   NUMBER,
-        fecha         DATE
+        codigo   NUMBER,
+        fech     DATE
     );
 
     FUNCTION num_facturas (
@@ -28,7 +28,7 @@ CREATE OR REPLACE PACKAGE pck_facturas AS
     ) RETURN NUMBER;
 
     FUNCTION total_factura (
-        cod_factura NUMBER
+        codigo NUMBER
     ) RETURN NUMBER;
 
 END pck_facturas;
@@ -45,14 +45,14 @@ CREATE OR REPLACE PACKAGE BODY pck_facturas AS
 ----------------------------------------------------------------------------------------------------------
 
     FUNCTION existe (
-        cod_factura NUMBER
+        codigo NUMBER
     ) RETURN BOOLEAN AS
         aux_1 facturas.cod_factura%TYPE;
     BEGIN
         SELECT cod_factura
         INTO aux_1
         FROM facturas
-        WHERE cod_factura = cod_factura;
+        WHERE cod_factura = codigo;
 
         RETURN true;
     EXCEPTION
@@ -68,15 +68,15 @@ CREATE OR REPLACE PACKAGE BODY pck_facturas AS
 ----------------------------------------------------------------------------------------------------------
 
     PROCEDURE alta_factura (
-        cod_factura   NUMBER,
-        fecha         DATE,
-        descripcion   VARCHAR2
+        codigo    NUMBER,
+        fech      DATE,
+        descrip   VARCHAR2
     ) AS
         error_ya_existe EXCEPTION;
         existe_ BOOLEAN;
     BEGIN
-        existe_ := existe(cod_factura);
-        IF existe_ THEN
+        existe_ := existe(codigo);
+        IF existe_ = true THEN
             RAISE error_ya_existe;
         ELSE
             INSERT INTO facturas (
@@ -84,9 +84,9 @@ CREATE OR REPLACE PACKAGE BODY pck_facturas AS
                 fecha,
                 descripcion
             ) VALUES (
-                cod_factura,
-                fecha,
-                descripcion
+                codigo,
+                fech,
+                descrip
             );
 
             COMMIT;
@@ -104,18 +104,18 @@ CREATE OR REPLACE PACKAGE BODY pck_facturas AS
 ----------------------------------------------------------------------------------------------------------
 
     PROCEDURE baja_factura (
-        cod_factura NUMBER
+        codigo NUMBER
     ) AS
         error_no_existe EXCEPTION;
         existe_ BOOLEAN;
     BEGIN
-        existe_ := existe(cod_factura);
+        existe_ := existe(codigo);
         IF existe_ THEN
             DELETE FROM lineas_factura
-            WHERE cod_factura = cod_factura;
+            WHERE cod_factura = codigo;
 
             DELETE FROM facturas
-            WHERE cod_factura = cod_factura;
+            WHERE cod_factura = codigo;
 
             COMMIT;
         ELSE
@@ -135,18 +135,18 @@ CREATE OR REPLACE PACKAGE BODY pck_facturas AS
 ----------------------------------------------------------------------------------------------------------
 
     PROCEDURE mod_descri (
-        cod_factura   NUMBER,
-        descripcion   VARCHAR2
+        codigo    NUMBER,
+        descrip   VARCHAR2
     ) AS
         error_no_existe EXCEPTION;
         existe_ BOOLEAN;
     BEGIN
-        existe_ := existe(cod_factura);
+        existe_ := existe(codigo);
         IF existe_ THEN
             UPDATE facturas
             SET
-                descripcion = descripcion
-            WHERE cod_factura = cod_factura;
+                descripcion = descrip
+            WHERE cod_factura = codigo;
 
             COMMIT;
         ELSE
@@ -164,18 +164,18 @@ CREATE OR REPLACE PACKAGE BODY pck_facturas AS
 ----------------------------------------------------------------------------------------------------------
 
     PROCEDURE mod_fecha (
-        cod_factura   NUMBER,
-        fecha         DATE
+        codigo   NUMBER,
+        fech     DATE
     ) AS
         error_no_existe EXCEPTION;
         existe_ BOOLEAN;
     BEGIN
-        existe_ := existe(cod_factura);
+        existe_ := existe(codigo);
         IF existe_ THEN
             UPDATE facturas
             SET
-                fecha = fecha
-            WHERE cod_factura = cod_factura;
+                fecha = fech
+            WHERE cod_factura = codigo;
 
             COMMIT;
         ELSE
@@ -211,14 +211,14 @@ CREATE OR REPLACE PACKAGE BODY pck_facturas AS
 ----------------------------------------------------------------------------------------------------------
 
     FUNCTION total_factura (
-        cod_factura NUMBER
+        codigo NUMBER
     ) RETURN NUMBER AS
         total NUMBER := 0;
     BEGIN
         SELECT SUM(pvp * unidades)
         INTO total
         FROM lineas_factura
-        WHERE cod_factura = cod_factura;
+        WHERE cod_factura = codigo;
 
         RETURN total;
     END total_factura;

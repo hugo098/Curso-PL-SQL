@@ -3,31 +3,31 @@
 ----------------------------------------------------------------------------------------------------------
 CREATE OR REPLACE PACKAGE pck_lineas_factura AS
     PROCEDURE alta_linea (
-        cod_factura    NUMBER,
-        cod_producto   NUMBER,
-        unidades       NUMBER,
-        fecha          DATE
+        codigo     NUMBER,
+        cod_prod   NUMBER,
+        uni        NUMBER,
+        fech       DATE
     );
 
     PROCEDURE baja_linea (
-        cod_factura    NUMBER,
-        cod_producto   NUMBER
+        codigo     NUMBER,
+        cod_prod   NUMBER
     );
 
     PROCEDURE mod_producto (
-        cod_factura    NUMBER,
-        cod_producto   NUMBER,
-        unidades       NUMBER
+        codigo     NUMBER,
+        cod_prod   NUMBER,
+        uni        NUMBER
     );
 
     PROCEDURE mod_producto (
-        cod_factura    NUMBER,
-        cod_producto   NUMBER,
-        fecha          DATE
+        codigo     NUMBER,
+        cod_prod   NUMBER,
+        fech       DATE
     );
 
     FUNCTION num_lineas (
-        cod_factura NUMBER
+        codigo NUMBER
     ) RETURN NUMBER;
 
 END pck_lineas_factura;
@@ -44,14 +44,14 @@ CREATE OR REPLACE PACKAGE BODY pck_lineas_factura AS
 ----------------------------------------------------------------------------------------------------------
 
     FUNCTION existe_factura (
-        cod_factura NUMBER
+        codigo NUMBER
     ) RETURN BOOLEAN AS
         aux_1 facturas.cod_factura%TYPE;
     BEGIN
         SELECT cod_factura
         INTO aux_1
         FROM facturas
-        WHERE cod_factura = cod_factura;
+        WHERE cod_factura = codigo;
 
         RETURN true;
     EXCEPTION
@@ -66,14 +66,14 @@ CREATE OR REPLACE PACKAGE BODY pck_lineas_factura AS
 ----------------------------------------------------------------------------------------------------------
 
     FUNCTION existe_producto (
-        cod_producto NUMBER
+        codigo NUMBER
     ) RETURN BOOLEAN AS
         aux_1 productos.cod_producto%TYPE;
     BEGIN
         SELECT cod_producto
         INTO aux_1
         FROM productos
-        WHERE cod_producto = cod_producto;
+        WHERE cod_producto = codigo;
 
         RETURN true;
     EXCEPTION
@@ -88,16 +88,16 @@ CREATE OR REPLACE PACKAGE BODY pck_lineas_factura AS
 ----------------------------------------------------------------------------------------------------------
 
     FUNCTION existe_linea_producto (
-        cod_factura    NUMBER,
-        cod_producto   NUMBER
+        codigo     NUMBER,
+        cod_prod   NUMBER
     ) RETURN BOOLEAN AS
         aux_1 productos.cod_producto%TYPE;
     BEGIN
         SELECT cod_producto
         INTO aux_1
         FROM lineas_factura
-        WHERE cod_producto = cod_producto
-              AND cod_factura = cod_factura;
+        WHERE cod_producto = cod_prod
+              AND cod_factura = codigo;
 
         RETURN true;
     EXCEPTION
@@ -113,14 +113,14 @@ CREATE OR REPLACE PACKAGE BODY pck_lineas_factura AS
 ----------------------------------------------------------------------------------------------------------
 
     FUNCTION pvp (
-        cod_producto NUMBER
+        codigo NUMBER
     ) RETURN productos.pvp%TYPE AS
         pvp productos.pvp%TYPE;
     BEGIN
         SELECT pvp
         INTO pvp
         FROM productos
-        WHERE cod_producto = cod_producto;
+        WHERE cod_producto = codigo;
 
         RETURN pvp;
     EXCEPTION
@@ -133,21 +133,21 @@ CREATE OR REPLACE PACKAGE BODY pck_lineas_factura AS
 ----------------------------------------------------------------------------------------------------------
 
     PROCEDURE alta_linea (
-        cod_factura    NUMBER,
-        cod_producto   NUMBER,
-        unidades       NUMBER,
-        fecha          DATE
+        codigo     NUMBER,
+        cod_prod   NUMBER,
+        uni        NUMBER,
+        fech       DATE
     ) AS
         error_no_existe_factura EXCEPTION;
         error_no_existe_producto EXCEPTION;
-        existe_factura_   BOOLEAN;
+        existe_factura_    BOOLEAN;
         existe_producto_   BOOLEAN;
-        pvp_              productos.pvp%TYPE;
+        pvp_               productos.pvp%TYPE;
     BEGIN
-        existe_factura_ := existe_factura(cod_factura);
-        existe_producto_ := existe_producto(cod_producto);
+        existe_factura_ := existe_factura(codigo);
+        existe_producto_ := existe_producto(cod_prod);
         IF existe_factura_ AND existe_producto_ THEN
-            pvp_ := pvp(cod_producto);
+            pvp_ := pvp(cod_prod);
             INSERT INTO lineas_factura (
                 cod_factura,
                 cod_producto,
@@ -155,13 +155,14 @@ CREATE OR REPLACE PACKAGE BODY pck_lineas_factura AS
                 unidades,
                 fecha
             ) VALUES (
-                cod_factura,
-                cod_producto,
+                codigo,
+                cod_prod,
                 pvp_,
-                unidades,
-                fecha
+                uni,
+                fech
             );
 
+            COMMIT;
         ELSIF NOT existe_factura_ THEN
             RAISE error_no_existe_factura;
         ELSIF NOT existe_producto_ THEN
@@ -182,18 +183,19 @@ CREATE OR REPLACE PACKAGE BODY pck_lineas_factura AS
 ----------------------------------------------------------------------------------------------------------
 
     PROCEDURE baja_linea (
-        cod_factura    NUMBER,
-        cod_producto   NUMBER
+        codigo     NUMBER,
+        cod_prod   NUMBER
     ) AS
         error_no_existe_linea EXCEPTION;
         existe_linea_producto_ BOOLEAN;
     BEGIN
-        existe_linea_producto_ := existe_linea_producto(cod_factura, cod_producto);
+        existe_linea_producto_ := existe_linea_producto(codigo, cod_prod);
         IF existe_linea_producto_ THEN
             DELETE FROM lineas_factura
-            WHERE cod_factura = cod_factura
-                  AND cod_producto = cod_producto;
+            WHERE cod_factura = codigo
+                  AND cod_producto = cod_prod;
 
+            COMMIT;
         ELSIF NOT existe_linea_producto_ THEN
             RAISE error_no_existe_linea;
         END IF;
@@ -210,21 +212,22 @@ CREATE OR REPLACE PACKAGE BODY pck_lineas_factura AS
 ----------------------------------------------------------------------------------------------------------
 
     PROCEDURE mod_producto (
-        cod_factura    NUMBER,
-        cod_producto   NUMBER,
-        unidades       NUMBER
+        codigo     NUMBER,
+        cod_prod   NUMBER,
+        uni        NUMBER
     ) AS
         error_no_existe_linea EXCEPTION;
         existe_linea_producto_ BOOLEAN;
     BEGIN
-        existe_linea_producto_ := existe_linea_producto(cod_factura, cod_producto);
+        existe_linea_producto_ := existe_linea_producto(codigo, cod_prod);
         IF existe_linea_producto_ THEN
             UPDATE lineas_factura
             SET
-                unidades = unidades
-            WHERE cod_factura = cod_factura
-                  AND cod_producto = cod_producto;
+                unidades = uni
+            WHERE cod_factura = codigo
+                  AND cod_producto = cod_prod;
 
+            COMMIT;
         ELSIF NOT existe_linea_producto_ THEN
             RAISE error_no_existe_linea;
         END IF;
@@ -241,21 +244,22 @@ CREATE OR REPLACE PACKAGE BODY pck_lineas_factura AS
 ----------------------------------------------------------------------------------------------------------
 
     PROCEDURE mod_producto (
-        cod_factura    NUMBER,
-        cod_producto   NUMBER,
-        fecha          DATE
+        codigo     NUMBER,
+        cod_prod   NUMBER,
+        fech       DATE
     ) AS
         error_no_existe_linea EXCEPTION;
         existe_linea_producto_ BOOLEAN;
     BEGIN
-        existe_linea_producto_ := existe_linea_producto(cod_factura, cod_producto);
+        existe_linea_producto_ := existe_linea_producto(codigo, cod_prod);
         IF existe_linea_producto_ THEN
             UPDATE lineas_factura
             SET
-                fecha = fecha
-            WHERE cod_factura = cod_factura
-                  AND cod_producto = cod_producto;
+                fecha = fech
+            WHERE cod_factura = codigo
+                  AND cod_producto = cod_prod;
 
+            COMMIT;
         ELSIF NOT existe_linea_producto_ THEN
             RAISE error_no_existe_linea;
         END IF;
@@ -272,14 +276,14 @@ CREATE OR REPLACE PACKAGE BODY pck_lineas_factura AS
 ----------------------------------------------------------------------------------------------------------
 
     FUNCTION num_lineas (
-        cod_factura NUMBER
+        codigo NUMBER
     ) RETURN NUMBER AS
         numero_lineas NUMBER;
     BEGIN
         SELECT COUNT(*)
         INTO numero_lineas
         FROM lineas_factura
-        WHERE cod_factura = cod_factura;
+        WHERE cod_factura = codigo;
 
         RETURN numero_lineas;
     END num_lineas;
