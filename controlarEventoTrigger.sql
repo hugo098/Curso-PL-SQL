@@ -3,40 +3,42 @@ CREATE OR REPLACE TRIGGER tr1_region BEFORE
 BEGIN
     IF inserting THEN
         INSERT INTO log_table VALUES (
-            'INSERCION',
-            user
+            'INSERCION', user
         );
 
     ELSIF updating('REGION_NAME') THEN
         INSERT INTO log_table VALUES (
-            'UPDATE DE REGION_NAME',
-            user
+            'UPDATE DE REGION_NAME', user
         );
 
     ELSIF updating('REGION_ID') THEN
         INSERT INTO log_table VALUES (
-            'UPDATE DE REGION_ID',
-            user
+            'UPDATE DE REGION_ID', user
         );
 
     ELSIF deleting THEN
         INSERT INTO log_table VALUES (
-            'DELETE',
-            user
+            'DELETE', user
         );
 
     END IF;
 END tr1_region;
 /
 
-insert into regions values(100, 'test');
-commit;
+INSERT INTO regions VALUES (
+    100, 'test'
+);
 
+COMMIT;
 
-update regions set region_id=101 where region_id=100;
-commit;
+UPDATE regions
+SET
+    region_id = 101
+WHERE region_id = 100;
 
-delete from regions where region_id=101;
-commit;
+COMMIT;
 
-   
+DELETE FROM regions
+WHERE region_id = 101;
+
+COMMIT;

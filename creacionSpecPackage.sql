@@ -1,8 +1,5 @@
-create or replace package pck1
-is
-    v1 number;
-    v2 number;
-    
-end;
+CREATE OR REPLACE PACKAGE pck1 IS
+    v1 NUMBER;
+    v2 VARCHAR2(100);
+END;
 /
-
